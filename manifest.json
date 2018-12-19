@@ -10,6 +10,11 @@
 			"js": ["content.js"]
 		}
 	],
+	"permissions": [
+		"background",
+		"tabs"
+	],
+	
 	"background": 
 		{
 		"scripts": ["background.js"]

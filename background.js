@@ -1,27 +1,44 @@
 var blacklistUrl = ['facebook.com', 'youtube.com', 'instagram.com', 'twitter.com'];
-var testBlacklist = 'google.com';
 
-chrome.browserAction.onClicked.addListener(buttonClicked);
+//the data to be stored in local chrome storage
+var data = {
+	"blacklistedUrls" : blacklistUrl,
+	"timeString" : timeString,
+	"date": new Date()
+};
+
+//Checks for either when a tab is activated or updated
 chrome.tabs.onActivated.addListener(checkAndStartTimer);
 chrome.tabs.onUpdated.addListener(checkAndStartTimer);
 
 
 function checkAndStartTimer(activeTab){
 	var currentUrl;
-	// tabid = activeTab.tabId;
-	// var activeTabId = activeTab.tabId;
-	// console.log(activeTab.tabId);
+	chrome.extension.sendMessage({time: timeString}, function(){});
 	chrome.tabs.query({currentWindow:true, active: true}, function(tabs){
 		currentUrl = tabs[0].url;
 		if(checkTab(currentUrl)){
 			start();
 			console.log("Blacklisted site detected , timer started");
+			updateData();
 		}else{
 			pause();
 			console.log("timer paused");
 			console.log(timeString);
+			updateData();
+
 		}
 	});
+}
+
+//update data helper function
+function updateData(){
+	data["blacklistUrls"] = blacklistUrl;
+	data["timeString"] = timeString;
+	data["date"] = new Date();
+	chrome.storage.local.set(data, function(){
+		console.log("Data succesfully updated and stored");
+	})
 }
 
 function checkTab(url){
@@ -95,6 +112,7 @@ function increment(){
 			timeString = hours + ":" + mins + ":" + secs;
 			increment();
 		}, 100)
+
 	}
 
 }

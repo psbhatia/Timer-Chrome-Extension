@@ -26,10 +26,10 @@ function checkAndStartTimer(activeTab){
 			console.log("timer paused");
 			console.log(timeString);
 			updateData();
+
 		}
 	});
 }
-
 
 //update data helper function
 function updateData(){
